@@ -55,7 +55,6 @@ python app/services/process_excel.py
 ## 🛠 Tecnologias Utilizadas
 
 - **Python** (Pandas, Matplotlib, Seaborn)
-- **Node.js** _(se aplicável para o frontend)_
 
 ## 📄 Licença
 
