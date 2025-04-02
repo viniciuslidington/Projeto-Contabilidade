@@ -101,7 +101,6 @@ class GestaoFinanceira:
             
 
             # Gráfico 2: Despesas por Categoria (linhas)
-            plt.figure(figsize=(18, 10))
 
             # Preparar os dados
             pivot_despesas = despesas.pivot(index='Mes_Ano', columns='Categoria', values='Saida').fillna(0)
