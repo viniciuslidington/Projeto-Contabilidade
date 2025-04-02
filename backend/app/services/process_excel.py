@@ -62,7 +62,7 @@ class GestaoFinanceira:
             for categoria, itens in categorias.items():
                 if any(pd.notna(nome) and pd.Series(nome).str.contains(item, case=False, na=False).any() for item in itens):  # Verificação mais flexível
                     return categoria  
-            return "Outros"
+            return 
 
         df_despesas['Categoria'] = df_despesas['Nome Natureza'].apply(categorizar)
         df_despesas['Mes_Ano'] = df_despesas['Mes_Ano'].astype(str)
@@ -106,9 +106,13 @@ class GestaoFinanceira:
             # Preparar os dados
             pivot_despesas = despesas.pivot(index='Mes_Ano', columns='Categoria', values='Saida').fillna(0)
 
-            # Plotar linhas para cada categoria
+            # Plotar linhas para cada categoria com marcadores apenas nos meses
             ax = pivot_despesas.plot(kind='line', marker='o', markersize=8, linewidth=2.5, figsize=(18, 10), 
                                     colormap='tab20', alpha=0.8)
+
+            # Adicionar apenas os pontos fixos para os meses
+            for categoria in pivot_despesas.columns:
+                plt.scatter(pivot_despesas.index, pivot_despesas[categoria], label=categoria, alpha=0)
 
             # Ajustes estéticos
             plt.xticks(rotation=45, ha='right', fontsize=10)
@@ -120,34 +124,22 @@ class GestaoFinanceira:
             plt.grid(True, linestyle='--', alpha=0.7)
             plt.tight_layout(pad=3.0)
 
-            # Tooltips interativos
-            cursor = mplcursors.cursor(hover=True)
+            # Tooltips interativos apenas para os pontos dos meses
+            cursor = mplcursors.cursor(plt.gca().collections, hover=True)
 
             @cursor.connect("add")
             def on_add(sel):
-                # Obter informações do ponto selecionado
                 x, y = sel.target
                 mes = pivot_despesas.index[int(x)]
                 categoria = sel.artist.get_label()
                 valor = y
-                
+
                 sel.annotation.set(text=f"Mês: {mes}\nCategoria: {categoria}\nValor: R${valor:,.2f}",
                                 bbox=dict(boxstyle="round,pad=0.5", fc="white", alpha=0.9),
                                 fontsize=10)
-                
-                # Destacar o ponto selecionado
-                sel.artist.set_markersize(12)
-                sel.artist.set_alpha(1)
-
-            def on_leave(event):
-                for line in ax.lines:
-                    line.set_markersize(8)
-                    line.set_alpha(0.8)
-                plt.draw()
-
-            plt.gcf().canvas.mpl_connect('motion_notify_event', on_leave)
 
             plt.show()
+
             
             # Gráfico 3: Lucro/Prejuízo Mensal (com tooltips)
             plt.figure(figsize=(12, 6))
