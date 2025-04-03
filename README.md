@@ -8,7 +8,6 @@ Certifique-se de ter os seguintes itens instalados:
 
 - **Python 3.12** ou superior
 - **Pip** (gerenciador de pacotes do Python)
-- **Node.js** _(opcional, caso queira configurar o frontend)_
 
 ## 🚀 Instalação
 
